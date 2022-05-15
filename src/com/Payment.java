@@ -67,4 +67,73 @@ public class Payment {
 		    return output;
 	}
 	
+	//Read payment list
+		public String readPaymentDetails()
+	    {
+		   String output = "";
+		   
+		   try
+		   {
+			   Connection con = connect(); 
+			   if (con == null) 
+			   { 
+				   return "Error while connecting to the database for reading."; 
+			   } 
+			 
+		     // Prepare the html table to be displayed
+		     output = "<table border='1'><tr><th>Customer ID</th><th>Customer Name</th>" +
+					   "<th>Payment Type</th>" +
+					   "<th>Card No</th>" +
+					   "<th>Payment Amount</th>" +
+					   "<th>Payment Date</th>" +
+					   "<th>Bill No</th>" +
+					   "<th>Update</th><th>Remove</th></tr>";
+		     
+
+			 String query = "select * from payment";
+			 Statement stmt = con.createStatement();
+			 ResultSet rs = stmt.executeQuery(query);
+			 
+			 
+			 // iterate through the rows in the result set
+			 while (rs.next())
+			 {
+				 String paymentNo = Integer.toString(rs.getInt("paymentNo"));
+				 String customerID = rs.getString("customerID");
+				 String customerName = rs.getString("customerName");
+				 String paymentType = rs.getString("paymentType");
+				 String cardNo = rs.getString("cardNo");
+				 String paymentAmount = Double.toString(rs.getDouble("paymentAmount"));
+				 String paymentDate = rs.getString("paymentDate");
+				 String billNo = rs.getString("billNo");
+				 
+				 // Add into the html table
+				 output += "<tr><td>" + customerID + "</td>";
+				 output += "<td>" + customerName + "</td>";
+				 output += "<td>" + paymentType + "</td>";
+				 output += "<td>" + cardNo + "</td>";
+				 output += "<td>" + paymentAmount + "</td>";
+				 output += "<td>" + paymentDate + "</td>";
+				 output += "<td>" + billNo + "</td>";
+				 
+				 // buttons
+				 output += "<td><input name='btnUpdate' type='button' value='Update' "
+						 + "class='btnUpdate btn btn-secondary' data-paymentno='" + paymentNo + "'></td>"
+						 + "<td><input name='btnRemove' type='button' value='Remove' "
+						 + "class='btnRemove btn btn-danger' data-paymentno='" + paymentNo + "'></td></tr>"; 
+			 }
+			 
+			 con.close();
+			 
+			 // Complete the html table
+			 output += "</table>";
+		   }
+		   catch (Exception e)
+		   {
+			 output = "Error while reading the payment details.";
+			 System.err.println(e.getMessage());
+		   }
+		   
+		   return output;
+	    }
 }
