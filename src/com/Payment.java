@@ -183,4 +183,34 @@ public class Payment {
 		   return output;
 		   
 		  }
+		//Delete Payment Details
+		public String deletePaymentDetails(String paymentNo) 
+		 { 
+		 String output = ""; 
+		 try
+		 { 
+		 Connection con = connect(); 
+		 if (con == null) 
+		 { 
+		 return "Error while connecting to the database for deleting."; 
+		 } 
+		 // create a prepared statement
+		 String query = "delete from payment where paymentNo=?"; 
+		 PreparedStatement preparedStmt = con.prepareStatement(query); 
+		 // binding values
+		 preparedStmt.setInt(1, Integer.parseInt(paymentNo)); 
+		 // execute the statement
+		 preparedStmt.execute(); 
+		 con.close(); 
+		 String newPayment = readPaymentDetails(); 
+		 output = "{\"status\":\"success\", \"data\": \"" + 
+		 newPayment + "\"}"; 
+		 } 
+		 catch (Exception e) 
+		 { 
+		 output = "{\"status\":\"error\", \"data\": \"Error while deleting the item.\"}"; 
+		 System.err.println(e.getMessage()); 
+		 } 
+		 return output; 
+		 } 
 }
