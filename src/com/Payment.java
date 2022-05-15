@@ -136,4 +136,51 @@ public class Payment {
 		   
 		   return output;
 	    }
+		//Update payment details
+		
+		public String updatePaymentDetails(String paymentNo,String customerID, String customerName, String paymentType, String cardNo, String amount, String date, String billNo)
+		{
+			String output = "";
+			
+			try
+			{
+				Connection con = connect(); 
+				 if (con == null) 
+				 { 
+					 return "Error while connecting to the database for updating."; 
+				 } 
+				
+				// create a prepared statement
+				String query = "UPDATE payment SET customerID=?,customerName=?,paymentType=?,cardNo=?, paymentAmount=?, paymentDate=?, billNo=? WHERE paymentNo=?";
+				
+				PreparedStatement preparedStmt = con.prepareStatement(query);
+		 
+				// binding values
+		
+				preparedStmt.setString(1, customerID);
+				preparedStmt.setString(2, customerName);
+				preparedStmt.setString(3, paymentType);
+				preparedStmt.setString(4, cardNo);
+				preparedStmt.setDouble(5, Double.parseDouble(amount));
+				preparedStmt.setString(6, date);
+				preparedStmt.setString(7,(billNo));
+				preparedStmt.setInt(8, Integer.parseInt(paymentNo));
+				 preparedStmt.execute();
+				 con.close();
+				 
+				 //output = "Payment detail updated successfully";
+				 String newPayments = readPaymentDetails(); 
+				 output = "{\"status\":\"success\", \"data\": \"" + 
+				 newPayments + "\"}"; 
+			}catch (Exception e)
+			{
+				 //output = "Error while updating the payment details.";
+				output = "{\"status\":\"error\", \"data\": \"Error while updating the payment.\"}"; 
+
+				 System.err.println(e.getMessage());
+		    }
+			
+		   return output;
+		   
+		  }
 }
